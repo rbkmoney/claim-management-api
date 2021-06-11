@@ -8,6 +8,7 @@ import com.rbkmoney.swag.claim_management.model.Modification.ModificationTypeEnu
 import com.rbkmoney.swag.claim_management.model.StatusModificationUnit.StatusEnum.DENIED
 import com.rbkmoney.swag.claim_management.model.StatusModificationUnit.StatusEnum.REVOKED
 import io.github.benas.randombeans.api.EnhancedRandom
+import mu.KotlinLogging
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import com.rbkmoney.damsel.claim_management.ClaimModification as ThriftClaimModification
@@ -25,6 +26,8 @@ import com.rbkmoney.swag.claim_management.model.StatusModification as SwagStatus
 import com.rbkmoney.swag.claim_management.model.StatusModificationUnit as SwagStatusModificationUnit
 
 class ClaimConvertersTest {
+
+    private val log = KotlinLogging.logger { }
 
     @Test
     fun claimStatusConverterTest() {
@@ -176,6 +179,10 @@ class ClaimConvertersTest {
                 ThriftClaimModification(),
                 TBaseHandler(ThriftClaimModification::class.java)
             )
+        if (thriftClaimModification.isSetDocumentModification) {
+            log.info { "Skip test due to the lack of implementation of the test case" }
+            return
+        }
         val thriftModification = ThriftModification().apply { claimModification = thriftClaimModification }
         val resultThriftModification = converter.convertToThrift(
             converter.convertToSwag(thriftModification)
