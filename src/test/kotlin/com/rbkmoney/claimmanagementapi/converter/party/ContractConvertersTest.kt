@@ -21,9 +21,11 @@ import com.rbkmoney.geck.serializer.kit.mock.MockTBaseProcessor
 import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler
 import com.rbkmoney.swag.claim_management.model.ArticlesOfAssociation
 import io.github.benas.randombeans.api.EnhancedRandom
-import mu.KotlinLogging
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.lang.IllegalArgumentException
 import com.rbkmoney.damsel.claim_management.ContractAdjustmentModificationUnit as ThriftContractAdjustmentModificationUnit
 import com.rbkmoney.damsel.claim_management.ContractParams as ThriftContractParams
 import com.rbkmoney.damsel.claim_management.PayoutToolModification as ThriftPayoutToolModification
@@ -46,8 +48,6 @@ import com.rbkmoney.swag.claim_management.model.RepresentativeDocument as SwagRe
 import com.rbkmoney.swag.claim_management.model.RussianBankAccount as SwagRussianBankAccount
 
 class ContractConvertersTest {
-
-    private val log = KotlinLogging.logger { }
 
     @Test
     fun russianBankAccountConverterTest() {
@@ -218,20 +218,31 @@ class ContractConvertersTest {
             testThriftPayoutToolModificationUnit, resultPayoutToolModificationUnitAll,
             "Thrift objects 'PayoutToolModificationUnit' (MockMode.ALL) not equals"
         )
-        var thriftPayoutToolModificationUnit = ThriftPayoutToolModificationUnit()
-        thriftPayoutToolModificationUnit = MockTBaseProcessor(MockMode.REQUIRED_ONLY)
-            .process(thriftPayoutToolModificationUnit, TBaseHandler(ThriftPayoutToolModificationUnit::class.java))
-        val thriftModification = thriftPayoutToolModificationUnit.modification
-        if (thriftModification.isSetCreation && thriftModification.creation.toolInfo.isSetPaymentInstitutionAccount) {
-            log.info { "Skip test due to the lack of implementation of the test case" }
-            return
-        }
-        val tmpSwagPayoutToolModificationUnit = converter.convertToSwag(thriftPayoutToolModificationUnit)
-        val resultPayoutToolModificationUnit = converter.convertToThrift(tmpSwagPayoutToolModificationUnit)
-        assertEquals(
-            thriftPayoutToolModificationUnit, resultPayoutToolModificationUnit,
-            "Thrift objects 'PayoutToolModificationUnit' (MockMode.REQUIRED_ONLY) not equals"
+    }
+
+    @Test
+    @RepeatedTest(10)
+    fun payoutToolModificationUnitThriftRandomConverterTest() {
+        val converter = PayoutToolModificationUnitConverter(
+            PayoutToolInfoConverter(InternationalBankAccountConverter(), ClaimRussianBankAccountConverter())
         )
+        val thriftPayoutToolModificationUnit = MockTBaseProcessor(MockMode.REQUIRED_ONLY)
+            .process(ThriftPayoutToolModificationUnit(), TBaseHandler(ThriftPayoutToolModificationUnit::class.java))
+        val modification = thriftPayoutToolModificationUnit.modification
+        // Temporary (hope so) hack
+        if (modification.isSetInfoModification && modification.infoModification.isSetPaymentInstitutionAccount ||
+            modification.isSetCreation && modification.creation.toolInfo.isSetPaymentInstitutionAccount
+        ) {
+            assertThrows<IllegalArgumentException> { converter.convertToSwag(thriftPayoutToolModificationUnit) }
+        } else {
+            val resultPayoutToolModificationUnit = converter.convertToThrift(
+                converter.convertToSwag(thriftPayoutToolModificationUnit)
+            )
+            assertEquals(
+                thriftPayoutToolModificationUnit, resultPayoutToolModificationUnit,
+                "Thrift objects 'PayoutToolModificationUnit' (MockMode.REQUIRED_ONLY) not equals"
+            )
+        }
     }
 
     @Test
