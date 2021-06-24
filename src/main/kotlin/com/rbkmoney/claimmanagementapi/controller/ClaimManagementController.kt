@@ -145,9 +145,8 @@ class ClaimManagementController(
                 claimId,
                 claimStatuses
             )
-            log.info {
-                "For status list, xRequestId=$xRequestId, claimId=$claimId, list statuses=$claimStatuses, " +
-                "size results=${response.result.size}"
+            log.info { "For status list, xRequestId=$xRequestId, claimId=$claimId, list statuses=$claimStatuses," +
+                " size results=${response.result.size}"
             }
 
             ResponseEntity.ok(response)
