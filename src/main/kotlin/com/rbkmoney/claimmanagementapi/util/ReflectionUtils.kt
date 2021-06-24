@@ -1,21 +1,18 @@
 package com.rbkmoney.claimmanagementapi.util
 
-import com.rbkmoney.claimmanagementapi.controller.Operation
-import com.rbkmoney.claimmanagementapi.enumerated.BouncerOperation
+import com.rbkmoney.claimmanagementapi.controller.AuthorizedOperation
 
 object ReflectionUtils {
 
-    fun getBouncerOperation(): BouncerOperation {
-        val operationAnnotation = Operation::class.java
+    fun getOperationId(): String {
+        val operationAnnotation = AuthorizedOperation::class.java
         val operationMethod = StackWalker.getInstance()
             .walk { frame ->
                 frame.map { it.toMethod() }
                     .filter { it.isAnnotationPresent(operationAnnotation) }
                     .findFirst()
             }.orElseThrow { RuntimeException("Can't resolve bouncer operation") }
-        return operationMethod
-            .getAnnotation(operationAnnotation)
-            .operation
+        return operationMethod.name
     }
 
     private fun StackWalker.StackFrame.toMethod() =
