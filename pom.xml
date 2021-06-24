@@ -28,7 +28,8 @@
         <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
 
         <swag-claim-management.version>1.31-ded0ac5-server</swag-claim-management.version>
-        <bouncer-proto.version>1.20-7dee26e</bouncer-proto.version>
+        <org-management-proto.version>1.2-06c5c84</org-management-proto.version>
+        <bouncer-proto.version>1.21-60cedce</bouncer-proto.version>
         <keycloak-spring-security.version>13.0.1</keycloak-spring-security.version>
         <bouncycastle-jdk15on.version>1.68</bouncycastle-jdk15on.version>
         <spring-cloud-contract-wiremock.version>2.2.4.RELEASE</spring-cloud-contract-wiremock.version>
@@ -86,6 +87,17 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>shared-resources</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>org-management-proto</artifactId>
+            <version>${org-management-proto.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.rbkmoney</groupId>
+                    <artifactId>bouncer-proto</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>

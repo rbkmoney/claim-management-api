@@ -12,6 +12,7 @@ import com.rbkmoney.damsel.claim_management.InvalidClaimRevision
 import com.rbkmoney.damsel.claim_management.InvalidClaimStatus
 import org.apache.thrift.TException
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.kotlin.doAnswer
@@ -28,6 +29,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
+@Disabled
 class ErrorControllerTest : AbstractKeycloakOpenIdAsWiremockConfig() {
 
     @Autowired

@@ -4,9 +4,10 @@ import com.rbkmoney.claimmanagementapi.exception.DeadlineException
 import com.rbkmoney.claimmanagementapi.exception.client.BadRequestException
 import com.rbkmoney.claimmanagementapi.exception.client.NotFoundException
 import com.rbkmoney.claimmanagementapi.exception.server.DarkApi5xxException
+import com.rbkmoney.claimmanagementapi.security.BouncerAccessService
+import com.rbkmoney.claimmanagementapi.security.KeycloakService
 import com.rbkmoney.claimmanagementapi.service.ClaimManagementService
 import com.rbkmoney.claimmanagementapi.service.PartyManagementService
-import com.rbkmoney.claimmanagementapi.service.security.KeycloakService
 import com.rbkmoney.claimmanagementapi.util.DeadlineChecker
 import com.rbkmoney.damsel.claim_management.BadContinuationToken
 import com.rbkmoney.damsel.claim_management.ChangesetConflict
@@ -38,7 +39,8 @@ class ClaimManagementController(
     private val claimManagementService: ClaimManagementService,
     private val partyManagementService: PartyManagementService,
     private val keycloakService: KeycloakService,
-    private val deadlineChecker: DeadlineChecker
+    private val deadlineChecker: DeadlineChecker,
+    private val bouncerAccessService: BouncerAccessService
 ) : ProcessingApi {
 
     private val log = KotlinLogging.logger { }
@@ -51,6 +53,7 @@ class ClaimManagementController(
         @Size(min = 1, max = 40) xRequestDeadline: String?
     ): ResponseEntity<Claim> =
         performRequest("createClaim", xRequestId!!) {
+            bouncerAccessService.checkAccess("createClaim", partyId)
             log.info { "Process 'createClaim' get started, xRequestId=$xRequestId" }
             partyManagementService.checkStatus(xRequestId)
             deadlineChecker.checkDeadline(xRequestDeadline, xRequestId)
@@ -66,6 +69,7 @@ class ClaimManagementController(
         @Size(min = 1, max = 40) xRequestDeadline: String?
     ): ResponseEntity<Claim> =
         performRequest("getClaimByID", xRequestId!!, claimId!!) {
+            bouncerAccessService.checkAccess("getClaimByID")
             log.info { "Process 'getClaimByID' get started, xRequestId=$xRequestId, claimId=$claimId" }
             partyManagementService.checkStatus(xRequestId)
             deadlineChecker.checkDeadline(xRequestDeadline, xRequestId)
@@ -85,6 +89,7 @@ class ClaimManagementController(
         @Valid reason: String?
     ): ResponseEntity<Void> =
         performRequest("revokeClaimByID", xRequestId!!, claimId!!, claimRevision!!) {
+            bouncerAccessService.checkAccess("revokeClaimByID", partyId)
             log.info { "Process 'revokeClaimByID' get started, xRequestId=$xRequestId, claimId=$claimId" }
             partyManagementService.checkStatus(xRequestId)
             deadlineChecker.checkDeadline(xRequestDeadline, xRequestId)
@@ -103,6 +108,7 @@ class ClaimManagementController(
         @Size(min = 1, max = 40) xRequestDeadline: String?
     ): ResponseEntity<Void> =
         performRequest("requestClaimReviewById", xRequestId!!, claimId!!, claimRevision!!) {
+            bouncerAccessService.checkAccess("requestClaimReviewById", partyId)
             log.info { "Process 'requestReviewClaimByID' get started, xRequestId=$xRequestId, claimId=$claimId" }
             partyManagementService.checkStatus(xRequestId)
             deadlineChecker.checkDeadline(xRequestDeadline, xRequestId)
@@ -122,6 +128,7 @@ class ClaimManagementController(
         @Valid claimStatuses: List<String>?
     ): ResponseEntity<InlineResponse200> =
         performRequest("searchClaims", xRequestId!!, claimId!!) {
+            bouncerAccessService.checkAccess("searchClaims")
             log.info { "Process 'searchClaims' get started, xRequestId=$xRequestId, claimId=$claimId" }
             partyManagementService.checkStatus(xRequestId)
             deadlineChecker.checkDeadline(xRequestDeadline, xRequestId)
@@ -150,6 +157,7 @@ class ClaimManagementController(
         @Size(min = 1, max = 40) xRequestDeadline: String?
     ): ResponseEntity<Void> =
         performRequest("updateClaimByID", xRequestId!!, claimId!!, claimRevision!!) {
+            bouncerAccessService.checkAccess("updateClaimByID", partyId)
             log.info { "Process 'updateClaimByID' get started, requestId=$xRequestId, claimId=$claimId" }
             partyManagementService.checkStatus(xRequestId)
             deadlineChecker.checkDeadline(xRequestDeadline, xRequestId)
