@@ -1,6 +1,5 @@
 package com.rbkmoney.claimmanagementapi.security
 
-import com.rbkmoney.claimmanagementapi.enumerated.BouncerOperation
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.access.AccessDeniedException
@@ -14,8 +13,7 @@ class BouncerAccessService(
 
     private val log = KotlinLogging.logger { }
 
-    override fun checkAccess(operation: BouncerOperation, partyId: String?) {
-        val operationId = operation.id
+    override fun checkAccess(operationId: String, partyId: String?) {
         log.info { "Check the user's rights to perform the operation $operationId" }
         val bouncerContext = BouncerContextDto(operationId, partyId)
         if (bouncerService.havePrivileges(bouncerContext).not()) {
