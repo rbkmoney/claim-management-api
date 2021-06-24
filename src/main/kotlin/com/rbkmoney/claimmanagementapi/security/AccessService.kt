@@ -1,5 +1,7 @@
 package com.rbkmoney.claimmanagementapi.security
 
+import com.rbkmoney.claimmanagementapi.enumerated.BouncerOperation
+
 interface AccessService {
-    fun checkAccess(operation: String, partyId: String? = null)
+    fun checkAccess(operation: BouncerOperation, partyId: String? = null)
 }

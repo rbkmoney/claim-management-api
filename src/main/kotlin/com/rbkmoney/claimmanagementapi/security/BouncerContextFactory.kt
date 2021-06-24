@@ -75,7 +75,7 @@ class BouncerContextFactory(
 
     private fun buildClaimManagementOperation(bouncerContext: BouncerContextDto) =
         ClaimManagementOperation().apply {
-            id = bouncerContext.operationName
+            id = bouncerContext.operationId
             party = Entity().apply { id = bouncerContext.partyId }
         }
 }

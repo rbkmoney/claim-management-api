@@ -11,7 +11,7 @@ class UserAuthContextProvider(
 
     fun getUserAuthContext(userId: String): ContextFragment =
         try {
-            authContextProvider.getUserContext(userId)
+            authContextProvider.getUserContext(userId) // ToDo: cache it
         } catch (ex: Exception) {
             throw RuntimeException("Can't get user auth context: userId = $userId", ex)
         }

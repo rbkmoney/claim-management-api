@@ -1,15 +1,15 @@
 package com.rbkmoney.claimmanagementapi.controller
 
 import com.rbkmoney.claimmanagementapi.config.AbstractKeycloakOpenIdAsWiremockConfig
+import com.rbkmoney.claimmanagementapi.security.BouncerAccessService
 import com.rbkmoney.claimmanagementapi.security.KeycloakService
 import com.rbkmoney.claimmanagementapi.service.ClaimManagementService
 import com.rbkmoney.claimmanagementapi.service.PartyManagementService
 import com.rbkmoney.swag.claim_management.model.Claim
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.doNothing
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -21,7 +21,6 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
-@Disabled
 class ClaimManagementControllerTest : AbstractKeycloakOpenIdAsWiremockConfig() {
 
     @Autowired
@@ -36,16 +35,20 @@ class ClaimManagementControllerTest : AbstractKeycloakOpenIdAsWiremockConfig() {
     @MockBean
     private lateinit var claimManagementService: ClaimManagementService
 
+    @MockBean
+    private lateinit var bouncerAccessService: BouncerAccessService
+
     @BeforeEach
     fun setUp() {
-        doNothing().whenever(partyManagementService).checkStatus(ArgumentMatchers.anyString())
+        doNothing().whenever(partyManagementService).checkStatus(any())
         doNothing().whenever(partyManagementService).checkStatus()
         whenever(keycloakService.partyId).thenReturn(randomUUID())
+        doNothing().whenever(bouncerAccessService).checkAccess(any(), any())
     }
 
     @Test
     fun testClaimShopLocationUrlAreConvertedRight() {
-        whenever(claimManagementService.createClaim(ArgumentMatchers.anyString(), ArgumentMatchers.anyList()))
+        whenever(claimManagementService.createClaim(any(), any()))
             .thenReturn(Claim().id(1L))
         mockMvc.perform(
             MockMvcRequestBuilders.post("/processing/claims")
