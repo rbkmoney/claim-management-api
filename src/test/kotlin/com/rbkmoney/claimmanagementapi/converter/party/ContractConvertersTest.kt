@@ -227,22 +227,14 @@ class ContractConvertersTest {
             PayoutToolInfoConverter(InternationalBankAccountConverter(), ClaimRussianBankAccountConverter())
         )
         val thriftPayoutToolModificationUnit = MockTBaseProcessor(MockMode.REQUIRED_ONLY)
-            .process(ThriftPayoutToolModificationUnit(), TBaseHandler(ThriftPayoutToolModificationUnit::class.java))
-        val modification = thriftPayoutToolModificationUnit.modification
-        // Temporary (hope so) hack
-        if (modification.isSetInfoModification && modification.infoModification.isSetPaymentInstitutionAccount ||
-            modification.isSetCreation && modification.creation.toolInfo.isSetPaymentInstitutionAccount
-        ) {
-            assertThrows<IllegalArgumentException> { converter.convertToSwag(thriftPayoutToolModificationUnit) }
-        } else {
-            val resultPayoutToolModificationUnit = converter.convertToThrift(
+                .process(ThriftPayoutToolModificationUnit(), TBaseHandler(ThriftPayoutToolModificationUnit::class.java))
+        val resultPayoutToolModificationUnit = converter.convertToThrift(
                 converter.convertToSwag(thriftPayoutToolModificationUnit)
-            )
-            assertEquals(
+        )
+        assertEquals(
                 thriftPayoutToolModificationUnit, resultPayoutToolModificationUnit,
                 "Thrift objects 'PayoutToolModificationUnit' (MockMode.REQUIRED_ONLY) not equals"
-            )
-        }
+        )
     }
 
     @Test
