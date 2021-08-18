@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component
 import com.rbkmoney.damsel.domain.PayoutToolInfo as ThriftPayoutToolInfo
 import com.rbkmoney.damsel.domain.WalletInfo as ThriftWalletInfo
 import com.rbkmoney.swag.claim_management.model.InternationalBankAccount as SwagInternationalBankAccount
+import com.rbkmoney.swag.claim_management.model.PaymentInstitutionAccount as SwagPaymentInstitutionAccount
 import com.rbkmoney.swag.claim_management.model.PayoutToolInfo as SwagPayoutToolInfo
 import com.rbkmoney.swag.claim_management.model.RussianBankAccount as SwagRussianBankAccount
 import com.rbkmoney.swag.claim_management.model.WalletInfo as SwagWalletInfo
-import com.rbkmoney.swag.claim_management.model.PaymentInstitutionAccount as SwagPaymentInstitutionAccount
 
 @Component
 class PayoutToolInfoConverter(
