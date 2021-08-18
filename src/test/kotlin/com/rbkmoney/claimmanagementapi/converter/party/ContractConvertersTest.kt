@@ -224,7 +224,7 @@ class ContractConvertersTest {
     @RepeatedTest(10)
     fun payoutToolModificationUnitThriftRandomConverterTest() {
         val converter = PayoutToolModificationUnitConverter(
-            PayoutToolInfoConverter(InternationalBankAccountConverter(), ClaimRussianBankAccountConverter())
+                PayoutToolInfoConverter(InternationalBankAccountConverter(), ClaimRussianBankAccountConverter())
         )
         val thriftPayoutToolModificationUnit = MockTBaseProcessor(MockMode.REQUIRED_ONLY)
                 .process(ThriftPayoutToolModificationUnit(), TBaseHandler(ThriftPayoutToolModificationUnit::class.java))
