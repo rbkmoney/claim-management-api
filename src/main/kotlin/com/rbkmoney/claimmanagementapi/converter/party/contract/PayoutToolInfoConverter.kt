@@ -61,7 +61,9 @@ class PayoutToolInfoConverter(
                 }
             }
             value.isSetPaymentInstitutionAccount -> {
-                SwagPaymentInstitutionAccount()
+                SwagPaymentInstitutionAccount().apply {
+                    payoutToolType = SwagPayoutToolInfo.PayoutToolTypeEnum.PAYMENTINSTITUTIONACCOUNT
+                }
             }
             else -> throw IllegalArgumentException("Unknown payout tool type!")
         }

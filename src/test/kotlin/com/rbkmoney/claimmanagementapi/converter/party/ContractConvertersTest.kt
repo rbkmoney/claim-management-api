@@ -24,7 +24,6 @@ import io.github.benas.randombeans.api.EnhancedRandom
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import com.rbkmoney.damsel.claim_management.ContractAdjustmentModificationUnit as ThriftContractAdjustmentModificationUnit
 import com.rbkmoney.damsel.claim_management.ContractParams as ThriftContractParams
 import com.rbkmoney.damsel.claim_management.PayoutToolModification as ThriftPayoutToolModification
@@ -224,16 +223,16 @@ class ContractConvertersTest {
     @RepeatedTest(10)
     fun payoutToolModificationUnitThriftRandomConverterTest() {
         val converter = PayoutToolModificationUnitConverter(
-                PayoutToolInfoConverter(InternationalBankAccountConverter(), ClaimRussianBankAccountConverter())
+            PayoutToolInfoConverter(InternationalBankAccountConverter(), ClaimRussianBankAccountConverter())
         )
         val thriftPayoutToolModificationUnit = MockTBaseProcessor(MockMode.REQUIRED_ONLY)
-                .process(ThriftPayoutToolModificationUnit(), TBaseHandler(ThriftPayoutToolModificationUnit::class.java))
+            .process(ThriftPayoutToolModificationUnit(), TBaseHandler(ThriftPayoutToolModificationUnit::class.java))
         val resultPayoutToolModificationUnit = converter.convertToThrift(
-                converter.convertToSwag(thriftPayoutToolModificationUnit)
+            converter.convertToSwag(thriftPayoutToolModificationUnit)
         )
         assertEquals(
-                thriftPayoutToolModificationUnit, resultPayoutToolModificationUnit,
-                "Thrift objects 'PayoutToolModificationUnit' (MockMode.REQUIRED_ONLY) not equals"
+            thriftPayoutToolModificationUnit, resultPayoutToolModificationUnit,
+            "Thrift objects 'PayoutToolModificationUnit' (MockMode.REQUIRED_ONLY) not equals"
         )
     }
 
